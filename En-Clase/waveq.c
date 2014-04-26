@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <string.h>
 #define FLOAT float
 #define PI 3.141592
 
@@ -89,26 +90,24 @@ int main(int argc, char **argv){
     /*Next iterations:*/
     
     for (j=0; j<n_t; j++) {
-        printf("Voy en el paso %d \n",j);
+        
+        char str[12];
+        sprintf(str, "%d%s", j, ".dat");
+        FILE *in = fopen(str,"w");
+        
         for (i=1; i<n_points; i++) {
             u_future[i] = (2.0*(1.0-pow(r,2)))*u_present[i] - u_past[i] + pow(r,2)*(u_present[i+1] + u_present[i-1]);
-            printf("%f\n",u_present[i]);
+            fprintf(in,"%f\n",u_present[i]);
         }
+        
+        fclose(in);
         //Variable to hold the previous value
         copy(u_present, u_past, n_points);
         //Variable to hold the present value
         copy(u_future, u_present, n_points);
+        
+        
     }
-    
-    
-    FILE *in = fopen("datos.dat","w");
-    
-    
-    for(i=0;i<n_points;i++){
-        fprintf(in,"%f %f %f %f \n",x[i],u_initial[i], u_future[i],u_present[i]);
-    }
-    
-    fclose(in);
     
     return 0;
     
